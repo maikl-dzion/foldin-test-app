@@ -1,4 +1,4 @@
-# faximile
+# Foldin-test-app
 
 ## Project setup
 ```
