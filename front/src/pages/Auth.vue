@@ -69,10 +69,11 @@ export default {
     auth() {
       const postData = this.authData
       const apiUrl = '/post/auth/login'
-      this.send(apiUrl, 'post', postData).then(this.responseHandle)
+      this.send(apiUrl, 'post', postData).then(this.authResponseHandle)
     },
 
-    responseHandle(resp) {
+    authResponseHandle(resp) {
+
       this.response = resp
       if (!resp.status || !resp.token) {
         alert('Не удалось авторизовать пользователя')
@@ -80,14 +81,12 @@ export default {
       }
 
       this.setToken(resp.token)
-
       this.store('user_name', resp.user.name)
-      this.store('user_id'  , resp.user.user_id)
-
-      this.sendEventBus ('auth_event', { user_id : resp.user.user_id } )
-
+      this.store('user_id', resp.user.user_id)
+      this.sendEventBus('auth_event', {user_id: resp.user.user_id})
       this.$router.push('/page/profile')
-    }
+
+    },
 
   } // methods
 

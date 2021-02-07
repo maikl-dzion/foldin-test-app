@@ -17,25 +17,16 @@ class UserController extends Controller
     // Регистрация пользователя
     public function userCreate($request){
 
-        if(!empty($request['password'])) {
+        if(!empty($request['password']))
             $request['password'] = password_hash($request['password'], PASSWORD_DEFAULT);
-        }
-
-        $newUser = new User();
-
-        foreach ($request as $fname => $value) {
-            $newUser->$fname = $value;
-        }
 
         try {
-            $result = $newUser->save();
+            $result = $this->model->insert($request);
         } catch (\Exception $exception) {
             return ['error' => $exception->getMessage()];
         }
 
-        return [
-            'save_result' => $result
-        ];
+        return ['save_result' => $result];
     }
 
     public function login($email, $password){
@@ -48,7 +39,7 @@ class UserController extends Controller
         $pwdHash = $user['password'];
         $token = $status = null;
         if (password_verify($password, $pwdHash)) {
-            $token = $this->jwt->makeToken($user);
+            $token = $this->jwt->createToken($user);
             $status = true;
         } else {
             return false;
@@ -61,12 +52,11 @@ class UserController extends Controller
         ];
     }
 
+    public function userCheckAccessToken($token) {
+        $result = $this->jwt->verifyToken($token);
+        if (!empty($result))
+            return $result;
+        return false;
+    }
 
-//    protected function verifyToken($token) {
-//        $jwt = new JwtAuth();
-//        $result = $jwt->verifyToken($token);
-//        if(!empty($result))
-//            return $result;
-//        return false;
-//    }
 }

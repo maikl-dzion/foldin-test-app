@@ -22,14 +22,14 @@ const Http = {
 
       data() {
         return {
-          apiUrl: '127.0.0.1/foldin-test-app/api/v1'
+          apiUrl: 'http://bolderfest.ru/foldin-test-app/api/v1'
           // apiUrl: 'http://laravel.my/foldin-test-app/api/v1'
         }
       },
 
-      created() {
-        this.setToken(null)
-      },
+      // created() {
+      //   this.setToken(null)
+      // },
 
       methods: {
 

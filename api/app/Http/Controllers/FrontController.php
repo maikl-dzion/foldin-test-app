@@ -2,18 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+
 class FrontController extends Controller
 {
 
     const JWT_TOKEN_NAME  = 'X-User-Jwt-Token';
     protected $requestHeaders = [];
     protected $user;
+    protected $request;
 
-    public function __construct(){
+    public function __construct(Request $request){
 
+        $this->request = $request;
         $this->user = new UserController();
         $this->link = new ShortLinkController();
         $this->setRequestHeaders();
+        // $this->userCheckAccessToken();
 
     }
 
@@ -21,7 +26,7 @@ class FrontController extends Controller
         return response()->json($data, $code);
     }
 
-    protected function getJwtToken($tokenName = self::JWT_TOKEN_NAME) {
+    protected function getToken($tokenName = self::JWT_TOKEN_NAME) {
         $token = null;
         if(!empty($this->requestHeaders[$tokenName]))
             $token = trim($this->requestHeaders[$tokenName]);
@@ -36,17 +41,20 @@ class FrontController extends Controller
        return $this->requestHeaders;
     }
 
-    protected function userAccess() {
-//        $token    = $this->getJwtToken();
-//        $userInfo = $this->verify($token);
-//        if(!empty($userInfo['id'])) {
-//            foreach ($userInfo as $key => $value) {
-//                if(isset($this->userInfo[$key])) {
-//                    $this->userInfo[$key] = $value;
-//                }
+    protected function userCheckAccessToken() {
+
+        $token = $this->getToken();
+        $result = $this->user->userCheckAccessToken($token);
+
+        if(empty($result)) {
+//            if ( !$this->request->is('v1/post/auth/login') &&
+//                 !$this->request->is('v1/post/user/register') ) {
+//                  die(json_encode(['error' => 'Токен пользователя недействительный']));
 //            }
-//            $this->userInfo['access'] = true;
-//            $this->userRole = $this->userInfo['role'];
-//        }
+        }
+
+        if(isset($result['password']))
+            unset($result['password']);
+        $this->user = $result;
     }
 }

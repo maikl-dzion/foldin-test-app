@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Models\Document;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+//use Illuminate\Http\Request;
+//use App\Http\Controllers\Controller;
 
 class JwtAuth
 {
 
-    public function makeToken($data) {
+    public function createToken($data) {
         $header    = array('alg' => 'HS256', 'type' => 'JWT');
         $payload   = $data;
         $secretKey = $this->getSecretKey();

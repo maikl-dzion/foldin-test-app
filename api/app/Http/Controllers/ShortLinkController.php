@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\ShortLink;
-use Illuminate\Http\Request;
 
 class ShortLinkController extends Controller
 {
@@ -14,50 +13,32 @@ class ShortLinkController extends Controller
 
     public function addLink($request){
 
-        $newLink = new ShortLink();
         if(!isset($request['code']))
-            $request['code'] = $this->createShortLink();
-
-        foreach ($request as $fname => $value) {
-            $newLink->$fname = $value;
-        }
+             $request['code'] = $this->createShortLink();
 
         try {
-            $result = $newLink->save();
+            $result = $this->model->insert($request);
         } catch (\Exception $exception) {
             return ['error' => $exception->getMessage()];
         }
 
-        return [
-            'save_result' => $result
-        ];
+        return ['save_result' => $result];
     }
 
     public function updateLink($linkId, $request){
-
-        $link = ShortLink::find($linkId);
-        foreach ($request as $fname => $value) {
-            $link->$fname = $value;
-        }
-        $result = $link->save();
-        return [
-            'save_result' => $result
-        ];
+        $result = $this->model->where('link_id', $linkId)->update($request);
+        return ['save_result' => $result];
     }
 
     public function deleteLink($linkId){
-        $link = ShortLink::find($linkId);
+        $link = $this->model->find($linkId);
         $result = $link->delete();
-        return [
-            'save_result' => $result
-        ];
+        return ['save_result' => $result];
     }
 
     public function getLinksByUserId($userId){
         $result = $this->model->where('user_id', $userId)->get();
-        return [
-            'result' => $result
-        ];
+        return ['result' => $result];
     }
 
     protected function createShortLink() {
@@ -75,8 +56,6 @@ class ShortLinkController extends Controller
         $result = $record->toArray();
         if(isset($result['link']))
             $result = $result['link'];
-        return [
-            'result' => $result
-        ];
+        return ['result' => $result];
     }
 }

@@ -8,8 +8,7 @@ class MainController extends FrontController
 {
 
     public function index(){
-        $data = [];
-        echo 'erttt';
+        echo 'MainIndex';
         // return $this->respond($data, 200);
     }
 
